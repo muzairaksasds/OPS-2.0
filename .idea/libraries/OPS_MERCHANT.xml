@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="OPS-MERCHANT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/OPS-MERCHANT.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
