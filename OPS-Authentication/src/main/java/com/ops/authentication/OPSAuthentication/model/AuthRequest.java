@@ -22,6 +22,6 @@ public class AuthRequest {
     private Long id;
 
     private String msisdn;
-    private String appId;
 
+    private String appId;
 }

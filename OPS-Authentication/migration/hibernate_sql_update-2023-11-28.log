@@ -1,0 +1,1 @@
+create table user (id integer not null auto_increment, apikey varchar(255), apisecret varchar(255), msisdn varchar(255), qrcode varchar(255), signature varchar(255), user_type varchar(255), username varchar(255), userpassword varchar(255), primary key (id)) engine=InnoDB
