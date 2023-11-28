@@ -6,7 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ops.authentication.OPSAuthentication.dto.AuthRequestDto;
 import com.ops.authentication.OPSAuthentication.dto.AuthResponseDto;
-import com.ops.authentication.OPSAuthentication.model.User;
+import com.ops.authentication.OPSAuthentication.model.UserResponse;
+import com.ops.authentication.OPSAuthentication.model.UserRequest;
 import com.ops.authentication.OPSAuthentication.service.AuthService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,8 +27,8 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody String msisdn){
-        return authService.createUser(msisdn);
+    public UserResponse registerUser(@RequestBody UserRequest userRequest) throws NoSuchAlgorithmException {
+        return authService.createUser(userRequest);
     }
 
     @PostMapping("/generate")

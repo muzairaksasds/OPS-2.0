@@ -1,29 +1,26 @@
 package com.ops.authentication.OPSAuthentication.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ops.authentication.OPSAuthentication.Repository.AuthRequestRepository;
 import com.ops.authentication.OPSAuthentication.dto.AuthRequestDto;
 import com.ops.authentication.OPSAuthentication.dto.AuthResponseDto;
 import com.ops.authentication.OPSAuthentication.model.AuthRequest;
-import com.ops.authentication.OPSAuthentication.model.User;
+import com.ops.authentication.OPSAuthentication.model.UserResponse;
+import com.ops.authentication.OPSAuthentication.model.UserRequest;
 import com.ops.authentication.OPSAuthentication.utility.ApiKeyGenerator;
 import com.ops.authentication.OPSAuthentication.utility.PasswordGenerator;
 import com.ops.authentication.OPSAuthentication.utility.SignatureGenerator;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -82,13 +79,16 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    public String generateRandomUUID(String prefix) {
+    public String generateRandomUUID(String prefix,int maxLength) {
+
         // Append a prefix and a UUID to create a random username
-        return prefix + UUID.randomUUID().toString().replace("-", "");
+       String fullUUID = prefix + UUID.randomUUID().toString().replace("-", "");
+        return fullUUID.substring(0, Math.min(fullUUID.length(), maxLength));
+
     }
 
     @Override
-    public User createUser(String msisdn) {
+    public UserResponse createUser(UserRequest userRequest) throws NoSuchAlgorithmException {
 //        String userType;
 //        String username;       // uuid
 //        String userpassword;   //random
@@ -97,16 +97,17 @@ public class AuthServiceImpl implements AuthService {
 //        String msisdn;
 //        String qrcode;     //  empty
 //        String signature ;
-        User user = new User();
+        UserResponse user = new UserResponse();
         user.setUserType("Merchant");
-        user.setUsername(generateRandomUUID(""));
+        user.setUsername(generateRandomUUID("", 8));
         user.setUserpassword(PasswordGenerator.generateRandomPassword(10));
         user.setApikey(ApiKeyGenerator.generateRandomApiKey());
-        user.setApisecret(generateRandomUUID(msisdn));
-        user.setMsisdn(msisdn);
+        user.setApisecret(generateRandomUUID( SignatureGenerator.generateMD5Hash(userRequest.getMsisdn()), 8));
+        user.setMsisdn(userRequest.getMsisdn());
+        user.setQrcode("");
 
         String signature = SignatureGenerator.generateSignature(user.getUserType(), user.getUsername(),
-                user.getUserpassword(), user.getApikey(), user.getApisecret(), msisdn, user.getQrcode());
+                user.getUserpassword(), user.getApikey(), user.getApisecret(), userRequest.getMsisdn(), user.getQrcode());
         user.setSignature(signature);
         //System.out.println(signature);
         return user;
