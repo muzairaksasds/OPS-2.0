@@ -20,6 +20,7 @@ public class AuthController {
     public AuthResponseDto generateSecretCodeAndJwt(@RequestBody AuthRequestDto authRequest) {
 
         return authService.generateSecretCodeAndJwt(authRequest);
+
     }
 
     //this resource must be accessed if we have valid jwt token
