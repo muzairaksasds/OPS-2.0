@@ -1,9 +1,6 @@
-package com.ops.authentication.OPSAuthentication.model;
+package com.ops.authentication.OPSAuthentication.model.response;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -18,7 +15,10 @@ public class UserResponse {
     String apikey;  //random   similar to apikey
     String apisecret;    //msdin + random number
     String msisdn;
-    String qrcode;     //  empty
-    String signature ;
+    //these will be uncommented later
+   // String qrcode;     //  empty
+    //String signature ;
+    //@Transient
+    //String userJwt;
 
 }

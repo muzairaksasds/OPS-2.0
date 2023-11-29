@@ -1,0 +1,2 @@
+2023-11-28 16:53:05,498 INFO [http-nio-8081-exec-5] c.o.a.O.c.AuthController [AuthController.java:38] Received request to generate secret code and JWT: {"msisdn":"03048736t97","appId":"abc"}
+2023-11-28 16:53:05,594 INFO [http-nio-8081-exec-5] c.o.a.O.c.AuthController [AuthController.java:43] Generated response: {"jwt":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1QgVG9rZW4iLCJtc2lzZG4iOiIwMzA0ODczNnQ5NyIsImFwcGlkIjoiYWJjIiwic2VjcmV0Q29kZSI6ImQyZGIxNjNiNGU5YjNmN2QzZTIyNmQ1ZWQwMWUxM2JjIiwiZXhwIjoxNzAxMTc1OTg1fQ.UmG8n4euODCs9TXg2_4T_uar6LKWB0i5TnvCYlvCETI"}

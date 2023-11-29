@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 public class SignatureGenerator {
 
     public static String generateSignature(String userType, String username, String userpassword,
-                                           String apikey, String apisecret, String msisdn, String qrcode) throws NoSuchAlgorithmException {
+                                           String apikey, String apisecret, String msisdn) throws NoSuchAlgorithmException {
         StringBuilder signature = new StringBuilder();
 
         appendField(signature, "userType", userType);
@@ -15,9 +15,8 @@ public class SignatureGenerator {
         appendField(signature, "apikey", apikey);
         appendField(signature, "apisecret", apisecret);
         appendField(signature, "msisdn", msisdn);
-        appendField(signature, "qrcode", qrcode);
+       // appendField(signature, "qrcode", qrcode);
 
-       //return signature.toString();
         System.out.println(signature.toString());
         return generateMD5Hash(signature.toString());
     }

@@ -2,8 +2,8 @@ package com.ops.authentication.OPSAuthentication.service;
 
 import com.ops.authentication.OPSAuthentication.dto.AuthRequestDto;
 import com.ops.authentication.OPSAuthentication.dto.AuthResponseDto;
-import com.ops.authentication.OPSAuthentication.model.UserResponse;
-import com.ops.authentication.OPSAuthentication.model.UserRequest;
+import com.ops.authentication.OPSAuthentication.model.response.UserResponse;
+import com.ops.authentication.OPSAuthentication.model.request.UserRequest;
 
 import java.security.NoSuchAlgorithmException;
 

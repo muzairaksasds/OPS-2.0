@@ -1,4 +1,4 @@
-package com.ops.authentication.OPSAuthentication.model;
+package com.ops.authentication.OPSAuthentication.model.request;
 
 import lombok.Data;
 

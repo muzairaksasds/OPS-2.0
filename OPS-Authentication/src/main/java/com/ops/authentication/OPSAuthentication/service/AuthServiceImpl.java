@@ -3,11 +3,12 @@ package com.ops.authentication.OPSAuthentication.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ops.authentication.OPSAuthentication.Repository.AuthRequestRepository;
+import com.ops.authentication.OPSAuthentication.Repository.UserRespository;
 import com.ops.authentication.OPSAuthentication.dto.AuthRequestDto;
 import com.ops.authentication.OPSAuthentication.dto.AuthResponseDto;
 import com.ops.authentication.OPSAuthentication.model.AuthRequest;
-import com.ops.authentication.OPSAuthentication.model.UserResponse;
-import com.ops.authentication.OPSAuthentication.model.UserRequest;
+import com.ops.authentication.OPSAuthentication.model.response.UserResponse;
+import com.ops.authentication.OPSAuthentication.model.request.UserRequest;
 import com.ops.authentication.OPSAuthentication.utility.ApiKeyGenerator;
 import com.ops.authentication.OPSAuthentication.utility.PasswordGenerator;
 import com.ops.authentication.OPSAuthentication.utility.SignatureGenerator;
@@ -29,6 +30,7 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthRequestRepository authRequestRepository;
+    private final UserRespository userRespository;
 
     @Override
     public AuthResponseDto generateSecretCodeAndJwt(AuthRequestDto authRequestDto) {
@@ -83,6 +85,9 @@ public class AuthServiceImpl implements AuthService {
 
         // Append a prefix and a UUID to create a random username
        String fullUUID = prefix + UUID.randomUUID().toString().replace("-", "");
+        if(maxLength==-1){
+            maxLength=fullUUID.length();
+        }
         return fullUUID.substring(0, Math.min(fullUUID.length(), maxLength));
 
     }
@@ -102,14 +107,16 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(generateRandomUUID("", 8));
         user.setUserpassword(PasswordGenerator.generateRandomPassword(10));
         user.setApikey(ApiKeyGenerator.generateRandomApiKey());
-        user.setApisecret(generateRandomUUID( SignatureGenerator.generateMD5Hash(userRequest.getMsisdn()), 8));
+        user.setApisecret(generateRandomUUID( SignatureGenerator.generateMD5Hash(userRequest.getMsisdn()), -1));
         user.setMsisdn(userRequest.getMsisdn());
-        user.setQrcode("");
+      //  user.setUserJwt( generateJwtUser(user.getMsisdn(),user.getApisecret()));
+        //user.setQrcode("");
 
         String signature = SignatureGenerator.generateSignature(user.getUserType(), user.getUsername(),
-                user.getUserpassword(), user.getApikey(), user.getApisecret(), userRequest.getMsisdn(), user.getQrcode());
-        user.setSignature(signature);
-        //System.out.println(signature);
+                user.getUserpassword(), user.getApikey(), user.getApisecret(), userRequest.getMsisdn());
+        //user.setSignature(signature);
+        userRespository.save(user); //saving userResponse
+        System.out.println(signature);
         return user;
 
     }
@@ -124,7 +131,17 @@ public class AuthServiceImpl implements AuthService {
         String dataToHash = authRequest.getMsisdn() + authRequest.getAppId();
         return DigestUtils.md5DigestAsHex(dataToHash.getBytes());
     }
+    private String generateJwtUser(String msisdn, String apisecret) {
+        byte[] secretKeyBytes = apisecret.getBytes(StandardCharsets.UTF_8);
 
+        Date expiration = new Date(System.currentTimeMillis() + 3600000); // 1 hour
+        return Jwts.builder()
+                .setSubject("JWT Token")
+                .claim("msisdn", msisdn)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS256, secretKeyBytes)
+                .compact();
+    }
     private String generateJwt(AuthRequestDto authRequest, String secretCode) {
 
         // Convert the secret key string to bytes
